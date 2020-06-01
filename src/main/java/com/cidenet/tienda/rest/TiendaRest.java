@@ -3,6 +3,7 @@ package com.cidenet.tienda.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,21 +29,29 @@ public class TiendaRest {
 		this.productoRepositorio = productoRepositorio;
 	}
 
-	
+	@CrossOrigin
 	@GetMapping("/productos")
 	public List<Producto> getProductos() {
 		return productoRepositorio.findAll();
 	}
 	
+	@CrossOrigin
 	@GetMapping("/movimientos")
 	public List<Movimiento> getMovimientos() {
 		return movimientoRepositorio.findAll();
 	}
 	
-	@PostMapping("/registrarMovimiento")
+	@CrossOrigin
+	@PostMapping(value="/registrarMovimiento",  consumes = "application/json")
 	public Movimiento registrarMovimiento(@RequestBody Movimiento movimiento) {
-		
+		System.out.println(movimiento.getProducto());
 		return movimientoRepositorio.save(movimiento);
 	}
 
+	@CrossOrigin
+	@PostMapping("/registrarProducto")
+	public Producto registrarProducto(@RequestBody Producto producto) {
+		return productoRepositorio.save(producto);
+	}
+	
 }
