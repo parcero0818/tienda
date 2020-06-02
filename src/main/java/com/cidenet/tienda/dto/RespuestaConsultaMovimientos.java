@@ -13,5 +13,15 @@ import lombok.Setter;
 public class RespuestaConsultaMovimientos extends Respuesta{
 
 	private List<Movimiento> movimientos;
+	
+	@Override
+	public boolean equals(Object o) {
+		return super.equals(o);
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 		
 }

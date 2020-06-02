@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.sun.istack.internal.NotNull;
+import javax.*;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,10 +21,8 @@ public class Producto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@NotNull
 	@Column(unique=true)
 	private String nombre;
-	@NotNull
 	private String descripcion;
 	private int cantidadDisponible;
 

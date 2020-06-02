@@ -58,7 +58,7 @@ public class ServicioMovimiento {
 		}
 	}
 	
-	public Respuesta validarMovimiento(Movimiento movimiento) throws Exception {
+	public Respuesta validarMovimiento(Movimiento movimiento) {
 		Respuesta respuesta = new Respuesta();
 		Producto producto = encontrarProducto(movimiento);
 		if(producto != null) {
@@ -69,7 +69,7 @@ public class ServicioMovimiento {
 		}
 	}
 	
-	public Respuesta actualizarMovimiento(Movimiento movimiento, Producto producto) throws Exception{
+	public Respuesta actualizarMovimiento(Movimiento movimiento, Producto producto){
 		Respuesta respuesta = new Respuesta();
 		if(isVenta(movimiento)) {
 			boolean disponible = cantidadDisponible(movimiento, producto);
@@ -89,18 +89,18 @@ public class ServicioMovimiento {
 		return movimiento.getTipo().equalsIgnoreCase(VENTA);
 	}
 	
-	public Producto encontrarProducto(Movimiento movimiento) throws Exception{
+	public Producto encontrarProducto(Movimiento movimiento){
 		Long idProd = movimiento.getProducto().getId();
 		Optional<Producto> producto = productoRepositorio.findById(idProd);
-		
-		return Optional.ofNullable(producto.get()).orElse(null);
+			
+		return producto.isPresent() ? producto.get() : null;
 	}
 	
-	public boolean cantidadDisponible(Movimiento movimiento, Producto producto) throws Exception{
+	public boolean cantidadDisponible(Movimiento movimiento, Producto producto){
 		return producto.getCantidadDisponible() >= movimiento.getCantidad() && producto.getCantidadDisponible() > 0;
 	}
 	
-	public boolean guardarMovimiento(Movimiento movimiento) throws Exception{
+	public boolean guardarMovimiento(Movimiento movimiento){
 		movimiento.setFecha(new Date());
 		return Optional.ofNullable(movimientoRepositorio.save(movimiento)).isPresent();
 	}
@@ -112,7 +112,7 @@ public class ServicioMovimiento {
 		return cantidadActual + movimiento.getCantidad();
 	}
 	
-	public Respuesta guardarYactualizar(Movimiento movimiento, Producto producto) throws Exception{
+	public Respuesta guardarYactualizar(Movimiento movimiento, Producto producto) {
 		Respuesta respuesta = new Respuesta();
 		if(guardarMovimiento(movimiento)) {
 			int cantidadNueva = cantidadNueva(movimiento, producto.getCantidadDisponible());
@@ -123,7 +123,7 @@ public class ServicioMovimiento {
 		return respuesta;
 	}
 	
-	public boolean actualizarProducto(Producto producto) throws Exception{
+	public boolean actualizarProducto(Producto producto){
 		return Optional.ofNullable(productoRepositorio.save(producto)).isPresent();
 	}
 	
