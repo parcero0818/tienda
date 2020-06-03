@@ -9,12 +9,16 @@ import javax.persistence.Id;
 import javax.*;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Producto {
 
 	

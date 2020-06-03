@@ -9,12 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
 @Entity
+@AllArgsConstructor
 public class Movimiento {
 
 	@Id

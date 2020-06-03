@@ -1,14 +1,12 @@
 package com.cidenet.tienda.servicios;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cidenet.tienda.dto.Respuesta;
-import com.cidenet.tienda.dto.RespuestaConsultaMovimientos;
 import com.cidenet.tienda.infraestructura.entidades.Movimiento;
 import com.cidenet.tienda.infraestructura.entidades.Producto;
 import com.cidenet.tienda.repositorio.MovimientoRepositorio;
@@ -31,34 +29,8 @@ public class ServicioMovimiento {
 		this.movimientoRepositorio = movimientoRepositorio;
 		this.productoRepositorio = productoRepositorio;
 	}
-
-	public RespuestaConsultaMovimientos getMovimientos() {
-		RespuestaConsultaMovimientos respuesta = new RespuestaConsultaMovimientos();
-		try {
-			List<Movimiento> movimientos = movimientoRepositorio.findAll();
-			if(Optional.ofNullable(movimientos).isPresent()) {
-				respuesta.setEstado(EXITO);
-				respuesta.setMovimientos(movimientos);
-			}else {
-				respuesta.setEstado(ERROR);
-			}
-		}catch (Exception e) {
-			respuesta.setEstado(ERROR);
-		}
-		return respuesta;
-	}
 	
-	public Respuesta registrarMovimiento(Movimiento movimiento) {
-		Respuesta respuesta = new Respuesta();
-		try {
-			return validarMovimiento(movimiento);
-		}catch (Exception e) {
-			respuesta.setEstado(ERROR);
-			return respuesta;
-		}
-	}
-	
-	public Respuesta validarMovimiento(Movimiento movimiento) {
+	public Respuesta registrarMovimiento(Movimiento movimiento){
 		Respuesta respuesta = new Respuesta();
 		Producto producto = encontrarProducto(movimiento);
 		if(producto != null) {
@@ -71,7 +43,7 @@ public class ServicioMovimiento {
 	
 	public Respuesta actualizarMovimiento(Movimiento movimiento, Producto producto){
 		Respuesta respuesta = new Respuesta();
-		if(isVenta(movimiento)) {
+		if(esVenta(movimiento)) {
 			boolean disponible = cantidadDisponible(movimiento, producto);
 			if(disponible) {
 				return guardarYactualizar(movimiento, producto);
@@ -85,11 +57,11 @@ public class ServicioMovimiento {
 		}
 	}
 	
-	public boolean isVenta(Movimiento movimiento) {
+	public boolean esVenta(Movimiento movimiento) {
 		return movimiento.getTipo().equalsIgnoreCase(VENTA);
 	}
 	
-	public Producto encontrarProducto(Movimiento movimiento){
+	public Producto encontrarProducto(Movimiento movimiento) {
 		Long idProd = movimiento.getProducto().getId();
 		Optional<Producto> producto = productoRepositorio.findById(idProd);
 			
@@ -106,7 +78,7 @@ public class ServicioMovimiento {
 	}
 	
 	public int cantidadNueva(Movimiento movimiento, int cantidadActual) {
-		if(isVenta(movimiento)) {
+		if(esVenta(movimiento)) {
 			return cantidadActual - movimiento.getCantidad();
 		}
 		return cantidadActual + movimiento.getCantidad();
@@ -119,7 +91,9 @@ public class ServicioMovimiento {
 			producto.setCantidadDisponible(cantidadNueva);
 			String res = actualizarProducto(producto) ? EXITO : ERROR;
 			respuesta.setEstado(res);
+			return respuesta;
 		}
+		respuesta.setEstado(ERROR);
 		return respuesta;
 	}
 	

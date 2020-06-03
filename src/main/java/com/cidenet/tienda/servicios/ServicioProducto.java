@@ -1,7 +1,6 @@
 package com.cidenet.tienda.servicios;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +17,9 @@ public class ServicioProducto {
 	private static final String EXITO = "200";
 	private static final String ERROR = "500";
 	
+
 	ProductoRepositorio productoRepositorio;
-	
+
 	@Autowired
 	public ServicioProducto(ProductoRepositorio productoRepositorio) {
 		this.productoRepositorio = productoRepositorio;
@@ -27,36 +27,36 @@ public class ServicioProducto {
 
 	public RespuestaConsultaProductos getProductos() {
 		RespuestaConsultaProductos respuesta = new RespuestaConsultaProductos();
-		try {
-			List<Producto> productos = productoRepositorio.findAll();
-			if(Optional.ofNullable(productos).isPresent()) {
-				respuesta.setEstado(EXITO);
-				respuesta.setProductos(productos);
-			}else {
-				respuesta.setEstado(ERROR);
-			}
-		}catch (Exception e) {
-			respuesta.setEstado(ERROR);
+
+		List<Producto> productos = encontrarProductos();
+		if (!productos.isEmpty()) {
+			respuesta.setEstado(EXITO);
+			respuesta.setProductos(productos);
+		} else {
+			respuesta.setEstado(EXITO);
 		}
-		
 		return respuesta;
-		
+
 	}
 
 	public Respuesta registrarProducto(@Validated Producto producto) {
 		Respuesta respuesta = new Respuesta();
-		try {
-			Producto prod = productoRepositorio.save(producto);
-			if(Optional.ofNullable(prod).isPresent()) {
-				respuesta.setEstado(EXITO);
-			}else {
-				respuesta.setEstado(ERROR);
-			}
-		}catch (Exception e) {
+
+		Producto prod = guardarProducto(producto);
+		if (prod != null) {
+			respuesta.setEstado(EXITO);
+		} else {
 			respuesta.setEstado(ERROR);
 		}
 		return respuesta;
 	}
-	
-	
+
+	public Producto guardarProducto(Producto producto) {
+		return productoRepositorio.save(producto);
+	}
+
+	public List<Producto> encontrarProductos() {
+		return productoRepositorio.findAll();
+	}
+		
 }
